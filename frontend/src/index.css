@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-main: #E81716;
+  --color-gray: #999999;
+
+  --font-atyp-semibold: AtypDisplay-Semibold, sans-serif; 
+  --font-atyp-bold: AtypDisplay-Bold, sans-serif; 
+  --font-atyp-medium: AtypDisplay-Medium, sans-serif; 
+  --font-atyp-regular: AtypDisplay-Regular, sans-serif; 
+
+
+}
+
+body {
+  background-color: white;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'AtypDisplay-Semibold';
+    src: url('fonts/AtypDisplay-Semibold.ttf') format('truetype');
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'AtypDisplay-Bold';
+    src: url('fonts/AtypDisplay-Bold.ttf') format('truetype');
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'AtypDisplay-Medium';
+    src: url('fonts/AtypDisplay-Medium.ttf') format('truetype');
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'AtypDisplay-Regular';
+    src: url('fonts/AtypDisplay-Regular.ttf') format('truetype');
+    font-style: normal;
+  }
+}
