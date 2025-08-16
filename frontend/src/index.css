@@ -8,13 +8,23 @@
   --font-atyp-bold: AtypDisplay-Bold, sans-serif; 
   --font-atyp-medium: AtypDisplay-Medium, sans-serif; 
   --font-atyp-regular: AtypDisplay-Regular, sans-serif; 
-
-
 }
 
 body {
   background-color: white;
 }
+
+@layer utilities {
+  input[type="date"]:invalid::-webkit-datetime-edit {
+    @apply text-gray;
+  }
+
+  input[type="date"]:valid::-webkit-datetime-edit {
+    @apply text-black;
+  }
+}
+
+
 
 @layer base {
   @font-face {

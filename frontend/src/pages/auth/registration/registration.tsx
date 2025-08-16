@@ -1,9 +1,6 @@
-import React from "react";
-import { Header } from "../../components/header";
-import { Footer } from "../../components/footer";
-import { LoginForm } from "../../components/loginForm";
-import { Aside } from "../../components/aside";
-import { RegForm } from "../../components/regFrom";
+import { Header } from "../../../components/auth/header";
+import { Aside } from "../../../components/auth/aside";
+import { RegForm } from "../../../components/auth/regFrom";
 
 export const Registration = () => {
     return (
@@ -14,7 +11,7 @@ export const Registration = () => {
                     <RegForm />
                 </main>
             </div>
-            <Aside /> 
+            <Aside side="right"/> 
         </div>
     )
 }

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { IInputProps } from "../interfaces";
 
-export const Input = ({ type, id, name, placeholder }) => {
+export const Input = ({ type, id, name, placeholder, inputRef, onChange }: IInputProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === "password";
     const inputType = isPassword && showPassword ? "text" : type;
 
     return (
-        <div className="relative w-full max-w-[327px]">
-            <input type={inputType} id={id} name={name} required placeholder={placeholder} className="text-black text-[14px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full max-w-[327px] h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"></input>
+        <div className="relative w-full max-w-[427px]">
+            <input type={inputType} id={id} name={name} ref={inputRef} onChange={onChange} required placeholder={placeholder} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"></input>
             {isPassword && (
                 <div onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-[50%] -translate-y-1/2 text-gray-400 hover:text-black focus:outline-none" tabIndex={-1}>
                     {showPassword ? (
