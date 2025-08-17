@@ -1,5 +1,5 @@
 import { API_URL } from "../constants/constants";
-import type { ILogin, ILoginResponse, IRegister, IRegisterResponse } from "../interfaces";
+import type { ILogin, ILoginResponse, IRegister, IRegisterResponse, IUser } from "../interfaces";
 
 // обработка ошибок 
 
@@ -27,9 +27,9 @@ const errorsResponse = async <T>(response: Response): Promise<T> => {
 export const registerUser = async (payload: IRegister): Promise<IRegisterResponse> => {
     try {
         const response = await fetch(`${API_URL}/register/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         })
         
         return await errorsResponse<IRegisterResponse>(response)
@@ -44,9 +44,9 @@ export const registerUser = async (payload: IRegister): Promise<IRegisterRespons
 export const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
     try {
         const response = await fetch(`${API_URL}/login/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         })
         
         return await errorsResponse<ILoginResponse>(response)
@@ -54,6 +54,23 @@ export const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
         console.error("Ошибка входа", error)
         throw error
     }
+}
+
+// получение данных пользователя 
+
+export const fetchMe = async (token: string): Promise<IUser> => {
+    try {
+        const response = await fetch(`${API_URL}/me/`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+
+        return await errorsResponse<IUser>(response)
+    } catch (error: any){
+        console.error("Ошибка загрузки профиля", error)
+        throw error
+    }
+  
+  
 }
 
 

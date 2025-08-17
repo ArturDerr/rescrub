@@ -57,3 +57,11 @@ export interface ILoginResponse {
   access: string
   refresh: string
 }
+
+export interface IAuthStore {
+  user: IUser | null
+  token: string | null
+  setAuth: (user: IUser, token: string) => void
+  setToken: (token: string) => void
+  logout: () => void
+}
