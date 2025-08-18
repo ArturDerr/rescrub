@@ -24,7 +24,7 @@ export interface IInputProps {
   placeholder: string
   inputRef?: React.Ref<HTMLInputElement>
   value?: string
-  onChange?: React.ChangeEventHandler<HTMLInputElement>
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export interface IRegister {

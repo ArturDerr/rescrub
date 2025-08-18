@@ -1,40 +1,30 @@
+import axios from "axios";
 import { API_URL } from "../constants/constants";
 import type { ILogin, ILoginResponse, IRegister, IRegisterResponse, IUser } from "../interfaces";
 
+const api = axios.create({
+  baseURL: API_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
 // обработка ошибок 
 
-const errorsResponse = async <T>(response: Response): Promise<T> => {
-    let data: any
-
-    // сделать красивый вывод ошибки в alert позже
-    try {
-        data = await response.json()
-    } catch {
-        throw new Error("Некорректный ответ от сервера, попробуйте позже")
+const handleError = (error: any) => {
+    if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message || error.response?.data?.message || error.message || "Незвестная ошибка, попробуйте позже"
+        throw new Error(message)
     }
-
-    if (!response.ok) {
-        const errorMessage = data?.message || data?.detail || "Незвестная ошибка, попробуйте позже"
-        throw new Error(errorMessage)
-    }   
-
-    return data as T
-
+    throw error
 }
 
 // регистрация 
 
 export const registerUser = async (payload: IRegister): Promise<IRegisterResponse> => {
     try {
-        const response = await fetch(`${API_URL}/register/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        
-        return await errorsResponse<IRegisterResponse>(response)
-    } catch (error: any) {
-        console.error("Ошибка регистрации", error)
+        const { data } = await api.post<IRegisterResponse>('/register/', payload)
+        return data
+    } catch (error) {
+        handleError(error)
         throw error
     }
 }
@@ -43,15 +33,11 @@ export const registerUser = async (payload: IRegister): Promise<IRegisterRespons
 
 export const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
     try {
-        const response = await fetch(`${API_URL}/login/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
+        const { data } = await api.post<ILoginResponse>('/login/', payload)
+        return data
         
-        return await errorsResponse<ILoginResponse>(response)
-    } catch (error: any) {
-        console.error("Ошибка входа", error)
+    } catch (error) {
+        handleError(error)
         throw error
     }
 }
@@ -60,16 +46,15 @@ export const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
 
 export const fetchMe = async (token: string): Promise<IUser> => {
     try {
-        const response = await fetch(`${API_URL}/me/`, {
-            headers: { Authorization: `Bearer ${token}` },
+        const { data } = await api.get<IUser>('/me/', {
+            headers: { Authorization: `Bearer ${token}` }
         })
-
-        return await errorsResponse<IUser>(response)
-    } catch (error: any){
-        console.error("Ошибка загрузки профиля", error)
+        return data
+        
+    } catch (error) {
+        handleError(error)
         throw error
     }
-  
   
 }
 

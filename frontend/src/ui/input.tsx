@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { IInputProps } from "../interfaces";
 
-export const Input = ({ type, id, name, placeholder, inputRef, onChange }: IInputProps) => {
+export const Input = ({ type, id, name, placeholder, inputRef, value, onChange }: IInputProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === "password";
@@ -9,7 +9,7 @@ export const Input = ({ type, id, name, placeholder, inputRef, onChange }: IInpu
 
     return (
         <div className="relative w-full max-w-[427px]">
-            <input type={inputType} id={id} name={name} ref={inputRef} onChange={onChange} required placeholder={placeholder} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"></input>
+            {name === 'lastname' ?  <input type={inputType} id={id} name={name} value={value} ref={inputRef} onChange={onChange} placeholder={placeholder} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"></input> : <input type={inputType} id={id} name={name} required value={value} ref={inputRef} onChange={onChange} placeholder={placeholder} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"></input>}
             {isPassword && (
                 <div onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-[50%] -translate-y-1/2 text-gray-400 hover:text-black focus:outline-none" tabIndex={-1}>
                     {showPassword ? (
