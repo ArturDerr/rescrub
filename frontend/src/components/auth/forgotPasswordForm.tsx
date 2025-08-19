@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 
 export const ForgotPasswordForm = () => {
@@ -9,7 +8,7 @@ export const ForgotPasswordForm = () => {
                 <h1 className="font-atyp-semibold justify-start text-black text-[25px] md:text-[30px] leading-7">Сброс пароля</h1>
                 <p className="font-atyp-regular justify-start text-black text-[13px] leading-3.5 mt-[6px] md:mt-[10px]">Пожалуйста, введите свою почту, и перейдите по ссылке в письме для сброса пароля.</p>
                 <form method="POST" action="/forgotPassword" className="flex-col flex gap-[10px] mt-[16px]">
-                    <Input type="email" id="email" name="email" placeholder="Введите почту" />
+                    <input type="email" id="email" name="email" placeholder="Введите почту" className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     <Button title="Перейти на почту"/>
                 </form>
                 <div className="mt-[6px] text-center">

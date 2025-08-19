@@ -12,6 +12,8 @@ export const routes = [
   { path: '/confirm', element: <ConfirmEmail /> },
   { path: '/forgot', element: <ForgotPassword /> },
   { path: '/reset', element: <ResetPassword /> },
+  { path: '/main', element: <ResetPassword /> },
+
 ]
 
 function App() {

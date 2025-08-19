@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../constants/constants";
 import type { ILogin, ILoginResponse, IRegister, IRegisterResponse, IUser } from "../interfaces";
+import { useAuthStore } from "../store/useAuthStore";
 
 const api = axios.create({
   baseURL: API_URL,
