@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import background from "/images/bg-image.svg"
 import { TextLoop } from '../../ui/text-loop';
 
-export const Aside = ({ side = 'right' }) => {
+export const Aside = ({ side = 'left' }) => {
     // анимация 
     const initialX = side === 'right' ? 200 : -200
     const exitX = side === 'right' ? -200 : 200;

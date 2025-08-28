@@ -28,9 +28,9 @@ export interface IInputProps {
 }
 
 export interface IRegister {
-  name: string
-  surname: string
-  lastname?: string
+  firstName: string
+  lastName: string
+  middleName?: string
   email: string
   birthDate: Date
   password: string
@@ -43,14 +43,13 @@ export interface ILogin {
 
 
 export interface IUser {
-  id: number
-  username: string
+  userId: number
   email: string
 }
 
 export interface IRegisterResponse {
-  user: IUser
-  token: string
+  userId: number
+  email: string
 }
 
 export interface ILoginResponse {
@@ -59,9 +58,10 @@ export interface ILoginResponse {
 }
 
 export interface IAuthStore {
-  user: IUser | null
+  userId: number | null
+  email: string | null
   token: string | null
-  setAuth: (user: IUser, token: string) => void
+  setAuth: (userId: number, email: string) => void
   setToken: (token: string) => void
   logout: () => void
 }
