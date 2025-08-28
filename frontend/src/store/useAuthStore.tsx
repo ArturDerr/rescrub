@@ -6,11 +6,12 @@ import { fetchMe, loginUser, registerUser } from "../api/auth";
 export const useAuthStore = create<IAuthStore>()(
     persist(
         (set) => ({
-            user: null,
+            userId: null,
+            email: null,
             token: null,
-            setAuth: (user, token) => set({ user, token }),
+            setAuth: (userId, email) => set({ userId, email }),
             setToken: (token) => set({ token }),
-            logout: () => set({ user: null, token: null }),
+            logout: () => set({ userId: null, email: null, token: null }),
         }),
         {
             name: "auth-storage"
@@ -20,7 +21,7 @@ export const useAuthStore = create<IAuthStore>()(
 
 export const registerAction = async (payload: IRegister) => {
     const data = await registerUser(payload)
-    useAuthStore.getState().setAuth(data.user, data.token)
+    useAuthStore.getState().setAuth(data.userId, data.email)
     return data
 }
 
@@ -38,6 +39,6 @@ export const fetchMeAction = async () => {
     }
 
     const user = await fetchMe(token)
-    useAuthStore.getState().setAuth(user, token)
+    useAuthStore.getState().setAuth(user.userId, user.email)
     return user
 }
