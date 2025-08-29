@@ -2,7 +2,7 @@ import logo from "/images/logo.svg"
 
 export const Header = () => {
     return (
-        <header className="z-1000 w-full">
+        <header className="z-1000 w-full fixed">
             <div className="flex-wrap flex p-[30px]">
                 <img src={logo} alt="Rescrub" className="cursor-pointer" onClick={() => window.location.href = 'https://rescrub.ru/'}/>
                 <div className="cursor-pointer ml-auto">

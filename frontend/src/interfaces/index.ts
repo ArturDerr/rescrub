@@ -1,6 +1,7 @@
 import type { Transition, Variants } from "motion";
 import type { AnimatePresenceProps } from "motion/react";
 
+// анимация
 export type TextLoopProps = {
   children: React.ReactNode[]
   className?: string
@@ -10,11 +11,6 @@ export type TextLoopProps = {
   onIndexChange?: (index: number) => void
   trigger?: boolean
   mode?: AnimatePresenceProps['mode']
-};
-
-export interface IDataStore {
-    userEmail: string | null
-    setUserEmail: (email: string) => void
 }
 
 export interface IInputProps {
@@ -27,41 +23,46 @@ export interface IInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
+// типы для регистрации
+
 export interface IRegister {
+  email: string
+  phone?: string
+  password: string
   firstName: string
   lastName: string
   middleName?: string
-  email: string
-  birthDate: Date
-  password: string
-}
-
-export interface ILogin {
-  email: string
-  password: string
-}
-
-
-export interface IUser {
-  userId: number
-  email: string
+  birthDate?: string
 }
 
 export interface IRegisterResponse {
+  message: string
   userId: number
   email: string
 }
 
-export interface ILoginResponse {
-  access: string
-  refresh: string
+// типы для входа
+
+export interface ILogin {
+  phone?: string
+  email: string
+  password: string
 }
 
-export interface IAuthStore {
-  userId: number | null
-  email: string | null
-  token: string | null
-  setAuth: (userId: number, email: string) => void
-  setToken: (token: string) => void
-  logout: () => void
+export interface ILoginResponse {
+  access_token: string
+  token_type: string
+  expires_in: number
+  user_id: number
+  email: string
+}
+
+// типы для сброса пароля
+
+export interface IForgotPassword {
+  email: string
+}
+
+export interface IForgotPasswordResponse {
+  message: string
 }

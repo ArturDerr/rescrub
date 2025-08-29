@@ -1,4 +1,4 @@
-import { Header } from "../../../components/auth/header";
+import { Header } from "../../../components/main/header";
 import { ForgotPasswordForm } from "../../../components/auth/forgotPasswordForm";
 
 export const ForgotPassword = () => {

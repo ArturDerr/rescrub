@@ -1,62 +1,53 @@
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 import { API_URL } from "../constants/constants";
-import type { ILogin, ILoginResponse, IRegister, IRegisterResponse, IUser } from "../interfaces";
-import { useAuthStore } from "../store/useAuthStore";
+import type { IForgotPassword, IForgotPasswordResponse, ILogin, ILoginResponse, IRegister, IRegisterResponse } from "../interfaces";
 
-const api = axios.create({
-  baseURL: API_URL,
-  headers: { "Content-Type": "application/json" },
-});
+// регистрация
 
-// обработка ошибок 
-
-const handleError = (error: any) => {
-    if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message || error.response?.data?.message || error.message || "Незвестная ошибка, попробуйте позже"
-        throw new Error(message)
-    }
-    throw error
-}
-
-// регистрация 
-
-export const registerUser = async (payload: IRegister): Promise<IRegisterResponse> => {
-    try {
-        const { data } = await api.post<IRegisterResponse>('/register/', payload)
-        return data
-    } catch (error) {
-        handleError(error)
-        throw error
-    }
+export const register = async (payload: IRegister): Promise<IRegisterResponse> => {
+    const response: AxiosResponse<IRegisterResponse> = await axios.post(
+        `${API_URL}/register/`, 
+        payload
+    )
+    return response.data
 }
 
 // логин 
 
-export const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
-    try {
-        const { data } = await api.post<ILoginResponse>('/login/', payload)
-        return data
-        
-    } catch (error) {
-        handleError(error)
-        throw error
+export const login = async (payload: ILogin): Promise<ILoginResponse> => {
+    const response: AxiosResponse<ILoginResponse> = await axios.post(
+        `${API_URL}/login/`, 
+        payload
+    )
+
+    if (response.data.access_token) {
+      localStorage.setItem("user", JSON.stringify(response.data));
     }
+
+    return response.data
 }
 
-// получение данных пользователя 
+// отправка письма для сброса пароля
 
-export const fetchMe = async (token: string): Promise<IUser> => {
-    try {
-        const { data } = await api.get<IUser>('/me/', {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        return data
-        
-    } catch (error) {
-        handleError(error)
-        throw error
-    }
-  
+export const forgotPassword = async (payload: IForgotPassword): Promise<IForgotPasswordResponse> => {
+    const response: AxiosResponse<IForgotPasswordResponse> = await axios.post(
+        `${API_URL}/forgot-password/`, 
+        payload
+    )
+
+    return response.data
 }
 
+// выход из аккаунта
+
+export const logout = (): void => {
+    localStorage.removeItem("user")
+}
+
+// поолучение пользователя
+
+export const getCurrentUser = (): ILoginResponse | null => {
+    const user = localStorage.getItem("user")
+    return user ? JSON.parse(user) : null
+  }
 
