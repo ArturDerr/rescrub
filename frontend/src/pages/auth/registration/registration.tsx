@@ -11,7 +11,7 @@ export const Registration = () => {
                     <RegForm />
                 </main>
             </div>
-            <Aside side="right"/> 
+            <Aside /> 
         </div>
     )
 }

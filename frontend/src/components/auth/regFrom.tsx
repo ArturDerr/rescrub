@@ -6,25 +6,15 @@ import { fetchMeAction, registerAction, useAuthStore } from "../../store/useAuth
 import { AlertError } from "../../ui/alertError";
 
 export const RegForm = () => {
-    const { token, user, logout } = useAuthStore()
+    const { logout } = useAuthStore()
 
     const [error, setError] = useState<string | null>(null)
     const [titleError, setTitleError] = useState<string>("Ошибка")
 
-    const [formData, setFormData] = useState({ name: "", surname: "", lastname: "", email: "", birthDate: "", password: "", policies: false })
+    const [formData, setFormData] = useState({ firstName: "", lastName: "", middleName: "", email: "", birthDate: "", password: "", policies: false })
     // валидация формы
     const [passwordRepeat, setPasswordRepeat] = useState("")
     const [policies, setPolicies] = useState(false)
-
-    // обработка ошибки
-    useEffect(() => {
-        if (token && !user) {
-            fetchMeAction().catch((e: any) => {
-                setTitleError("Ошибка проверки токена")
-                setError(e || 'Неизвестная ошибка')
-            })
-        }
-    }, [token, user])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -32,8 +22,8 @@ export const RegForm = () => {
 
     // валидация форм
     const validateForm = () => {
-        if (!formData.name.trim()) return "Введите имя"
-        if (!formData.surname.trim()) return "Введите фамилию"
+        if (!formData.firstName.trim()) return "Введите имя"
+        if (!formData.lastName.trim()) return "Введите фамилию"
         if (!formData.email.match(/^[\w-.]+@[\w-]+\.[a-z]{2,}$/i)) return "Некорректный email"
         if (!formData.birthDate) return "Введите дату рождения"
         if (formData.password.length < 6) return "Пароль должен содержать минимум 6 символов"
@@ -74,9 +64,9 @@ export const RegForm = () => {
                 <h1 className="font-atyp-semibold justify-start text-black text-[25px] md:text-[30px] leading-7">Создайте аккаунт</h1>
                 <p className="font-atyp-regular justify-start text-black text-[12px] leading-3.5 mt-[6px] md:mt-[10px]">и начните удалять свои персональные данные <br className="hidden sm:flex"/> из сети прямо сейчас.</p>
                 <form onSubmit={handleRegister} className="flex-col flex gap-[10px] mt-[16px] relative w-full max-w-[427px]">
-                    <input type="text" id="name" name="name" required placeholder="Введите имя" value={formData.name} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="text" id="surname" name="surname" required placeholder="Введите фамилию" value={formData.surname} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="text" id="lastname" name="lastname" placeholder="Введите отчество (при наличии)" value={formData.lastname} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" id="name" name="name" required placeholder="Введите имя" value={formData.firstName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" id="surname" name="surname" required placeholder="Введите фамилию" value={formData.lastName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" id="lastname" name="lastname" placeholder="Введите отчество (при наличии)" value={formData.middleName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     <input type="email" id="email" name="email" required placeholder="Введите почту" value={formData.email} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     
                     <label className="text-[13px] font-atyp-medium">Дата рождения</label>

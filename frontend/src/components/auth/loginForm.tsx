@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { AlertError } from "../../ui/alertError";
 
 export const LoginForm = () => {
-    const { token, user, logout } = useAuthStore()
+    const { logout } = useAuthStore()
 
     const navigate = useNavigate()
 
@@ -14,16 +14,6 @@ export const LoginForm = () => {
     const [titleError, setTitleError] = useState<string>("Ошибка")
 
     const [formData, setFormData] = useState({ email: "", password: "" })
-
-    // обработка ошибки
-    useEffect(() => {
-        if (token && !user) {
-            fetchMeAction().catch((e: any) => {
-                setTitleError("Ошибка проверки токена")
-                setError(e || 'Неизвестная ошибка')
-            })
-        }
-    }, [token, user])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -58,7 +48,7 @@ export const LoginForm = () => {
                         <label htmlFor="remember" className="text-[13px] text-black font-atyp-medium cursor-pointer">Запомнить меня</label>
                         <a className="block text-[11px] md:text-[12px] text-main font-atyp-regular cursor-pointer right-0 ml-auto hover:underline"><Link to="/forgot" className="text-main hover:underline cursor-pointer">Забыли пароль?</Link></a>
                     </div>
-                    <Button title="Войти" link="/main"/>
+                    <Button title="Войти" link="/main" />
                 </form>
                 <div className="mt-[6px] text-center">
                     <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Еще нет аккаунта? <Link to="/reg" className="text-main hover:underline cursor-pointer">Зарегистрироваться</Link></span>
