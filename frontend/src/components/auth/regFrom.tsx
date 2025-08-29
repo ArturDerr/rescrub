@@ -1,19 +1,27 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { Input } from "../../ui/input";
+import { useState } from "react";
+import MuiAlert, { type AlertProps } from '@mui/material/Alert'
+import { register } from "../../api/auth";
+import type { IRegister, IRegisterResponse } from "../../interfaces";
+import Snackbar from "@mui/material/Snackbar";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button";
-import { fetchMeAction, registerAction, useAuthStore } from "../../store/useAuthStore";
-import { AlertError } from "../../ui/alertError";
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export const RegForm = () => {
-    const { logout } = useAuthStore()
+
+    const navigation = useNavigate();
+    const navigate = (route: any) => navigation(route);
 
     const [error, setError] = useState<string | null>(null)
-    const [titleError, setTitleError] = useState<string>("Ошибка")
+    const [success, setSuccess] = useState<string | null>(null)
 
-    const [formData, setFormData] = useState({ firstName: "", lastName: "", middleName: "", email: "", birthDate: "", password: "", policies: false })
+    const [formData, setFormData] = useState({ email: "", phone: "", password: "", firstName: "", lastName: "", middleName: "", birthDate: "" })
     // валидация формы
     const [passwordRepeat, setPasswordRepeat] = useState("")
+    const passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
     const [policies, setPolicies] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +34,8 @@ export const RegForm = () => {
         if (!formData.lastName.trim()) return "Введите фамилию"
         if (!formData.email.match(/^[\w-.]+@[\w-]+\.[a-z]{2,}$/i)) return "Некорректный email"
         if (!formData.birthDate) return "Введите дату рождения"
-        if (formData.password.length < 6) return "Пароль должен содержать минимум 6 символов"
+        if (!formData.password.match(passwordRegEx)) return "Пароль должен содержать минимум 8 символов, а также включать в себя цифры и буквы"
+        if (formData.password.length < 8) return "Пароль должен содержать минимум 8 символов"
         if (formData.password !== passwordRepeat) return "Пароли не совпадают"
         if (!policies) return "Необходимо согласиться с политикой"
         return null;
@@ -35,50 +44,51 @@ export const RegForm = () => {
     // регистрация
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
+        setError(null)
+        setSuccess(null)
 
         const validationError = validateForm()
         if (validationError) {
-            setTitleError("Ошибка")
             setError(validationError)
             return
         }
-        
+
         try {
-            
-            const payload = {
-                ...formData,
-                birthDate: new Date(formData.birthDate),
+            const payload: IRegister = { ...formData }
+            const response: IRegisterResponse = await register(payload)
+            setSuccess(response.message)
+            setPasswordRepeat("")
+            navigate("/confirm")
 
-            }
-
-            await registerAction(payload)
-        } catch (e) {
-            setTitleError("Ошибка регистрации")
-            setError((e as Error).message)
+        } catch (err: any) {
+            const resMessage = err.response?.data?.detail ||  err.response?.data?.message || err.message || "Ошибка регистрации"
+            setError(resMessage)
         }
+        
+
     }
     
     return (
-        <div className="w-full flex justify-center mb-10">
+        <div className="w-full flex justify-center mt-30">
             <div className="flex-col flex p-[30px] w-full max-w-[427px]">
                 <h1 className="font-atyp-semibold justify-start text-black text-[25px] md:text-[30px] leading-7">Создайте аккаунт</h1>
                 <p className="font-atyp-regular justify-start text-black text-[12px] leading-3.5 mt-[6px] md:mt-[10px]">и начните удалять свои персональные данные <br className="hidden sm:flex"/> из сети прямо сейчас.</p>
                 <form onSubmit={handleRegister} className="flex-col flex gap-[10px] mt-[16px] relative w-full max-w-[427px]">
-                    <input type="text" id="name" name="name" required placeholder="Введите имя" value={formData.firstName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="text" id="surname" name="surname" required placeholder="Введите фамилию" value={formData.lastName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="text" id="lastname" name="lastname" placeholder="Введите отчество (при наличии)" value={formData.middleName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="email" id="email" name="email" required placeholder="Введите почту" value={formData.email} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" name="firstName" required placeholder="Введите имя" value={formData.firstName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" name="lastName" required placeholder="Введите фамилию" value={formData.lastName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" name="middleName" placeholder="Введите отчество (при наличии)" value={formData.middleName} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="email" name="email" required placeholder="Введите почту" value={formData.email} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     
                     <label className="text-[13px] font-atyp-medium">Дата рождения</label>
-                    <input type="date" id="birthDate" name="birthDate" required placeholder="ДД.ММ.ГГГГ" value={formData.birthDate} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" name="birthDate" required placeholder="ДД-ММ-ГГГГ" value={formData.birthDate} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     
                     <label className="text-[13px] font-atyp-medium">Пароль</label>
-                    <input type="password" id="password" name="password" required placeholder="Введите пароль" value={formData.password} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="password" id="passwordRepeat" name="passwordRepeat" required placeholder="Повторите пароль" value={passwordRepeat} onChange={(e) => setPasswordRepeat(e.target.value)} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="password" name="password" required placeholder="Введите пароль" value={formData.password} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="password" name="passwordRepeat" required placeholder="Повторите пароль" value={passwordRepeat} onChange={(e) => setPasswordRepeat(e.target.value)} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     
                     <div className="flex items-center gap-2 mt-[3px] mb-[3px]">
                         <input type="checkbox" id="policies" name="policies" checked={policies} onChange={(e) => setPolicies(e.target.checked)} className="cursor-pointer w-[16px] h-[16px] appearance-none border border-black rounded-[4px] checked:bg-main checked:border-main checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-[12px] checked:after:leading-[14px] checked:after:text-center"/>
-                        <label htmlFor="policies" className="text-[11px] text-black font-atyp-regular leading-3">Я подтверждаю свое согласие с <br/><span className="cursor-pointer underline hover:text-main">политикой конфиденциальности</span> и с <span className="cursor-pointer underline hover:text-main">договором оферты</span></label>
+                        <label htmlFor="policies" className="text-[11px] text-black font-atyp-regular leading-3">Я подтверждаю свое согласие с <br/><Link to="/policies" className="cursor-pointer underline hover:text-main">политикой конфиденциальности</Link> и с <Link to="/agreement" className="cursor-pointer underline hover:text-main">договором оферты</Link></label>
                     </div>
                     <Button title="Зарегистрироваться" link="/confirm"/>
                 </form>
@@ -86,7 +96,14 @@ export const RegForm = () => {
                     <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Уже есть аккаунт? <Link to="/log" className="text-main hover:underline cursor-pointer">Войти</Link></span>
                 </div>
             </div>
-            {error && <AlertError title={titleError} description={error}/>}
+            <div className="flex justify-center items-center">
+                <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)} className="justify-center flex">
+                <Alert severity="error">{error}</Alert>
+                </Snackbar>
+                <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess(null)}>
+                    <Alert severity="success">{success}</Alert>
+                </Snackbar>
+            </div>
         </div>
     )
 }

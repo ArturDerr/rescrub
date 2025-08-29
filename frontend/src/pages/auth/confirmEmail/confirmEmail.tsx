@@ -1,5 +1,5 @@
-import { Header } from "../../../components/auth/header";
-import { Footer } from "../../../components/auth/footer";
+import { Header } from "../../../components/main/header";
+import { Footer } from "../../../components/main/footer";
 import { ConfirmEmailForm } from "../../../components/auth/confirmEmailForm";
 
 export const ConfirmEmail = () => {

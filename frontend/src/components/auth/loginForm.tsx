@@ -1,39 +1,47 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button";
-import { fetchMeAction, loginAction, useAuthStore } from "../../store/useAuthStore";
 import { useEffect, useState } from "react";
-import { AlertError } from "../../ui/alertError";
+import type { ILogin, ILoginResponse } from "../../interfaces";
+import { login } from "../../api/auth";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { type AlertProps } from '@mui/material/Alert'
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export const LoginForm = () => {
-    const { logout } = useAuthStore()
 
     const navigate = useNavigate()
 
+    const [success, setSuccess] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
-    const [titleError, setTitleError] = useState<string>("Ошибка")
 
-    const [formData, setFormData] = useState({ email: "", password: "" })
+    const [formData, setFormData] = useState({ phone: "", email: "", password: "" })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
     }
 
-    // вход
-    const handleLogin = async () => {
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError(null)
+        setSuccess(null)
+
         try {
-            const payload = {
-                ...formData
-            }
-
-            await loginAction(payload)
-
+            const payload: ILogin = { ...formData }
+            const response: ILoginResponse = await login(payload)
+            setSuccess(response.email)
             navigate("/main")
-        } catch (e) {
-            setTitleError("Ошибка входа")
-            setError((e as Error).message)
+
+        } catch (err: any) {
+            const resMessage = err.response?.data?.detail ||  err.response?.data?.message || err.message || "Ошибка авторизации"
+            setError(resMessage)
         }
-    }    
+        
+
+    }
 
     return (
         <div className="w-full flex justify-center">
@@ -41,20 +49,21 @@ export const LoginForm = () => {
                 <h1 className="font-atyp-semibold justify-start text-black text-[25px] md:text-[30px] leading-7">Войдите в аккаунт</h1>
                 <p className="font-atyp-regular justify-start text-black text-[12px] leading-3.5 mt-[6px] md:mt-[10px]">и начните удалять свои персональные данные <br className="hidden sm:flex"/> из сети прямо сейчас.</p>
                 <form onSubmit={handleLogin} className="flex-col flex gap-[10px] mt-[16px]">
-                    <input type="email" id="email" name="email" required placeholder="Введите почту" value={formData.email} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <input type="password" id="password" name="password" required placeholder="Введите пароль" value={formData.password} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
-                    <div className="flex items-center gap-2">
-                        <input type="checkbox" id="remember" name="remember" className="cursor-pointer w-[16px] h-[16px] appearance-none border border-black rounded-[4px] checked:bg-main checked:border-main checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-[12px] checked:after:leading-[14px] checked:after:text-center"/>
-                        <label htmlFor="remember" className="text-[13px] text-black font-atyp-medium cursor-pointer">Запомнить меня</label>
-                        <a className="block text-[11px] md:text-[12px] text-main font-atyp-regular cursor-pointer right-0 ml-auto hover:underline"><Link to="/forgot" className="text-main hover:underline cursor-pointer">Забыли пароль?</Link></a>
-                    </div>
+                    <input type="email" name="email" required placeholder="Введите почту" value={formData.email} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="password" name="password" required placeholder="Введите пароль" value={formData.password} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     <Button title="Войти" link="/main" />
                 </form>
                 <div className="mt-[6px] text-center">
                     <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Еще нет аккаунта? <Link to="/reg" className="text-main hover:underline cursor-pointer">Зарегистрироваться</Link></span>
+                    <a className="block text-[11px] md:text-[12px] text-main font-atyp-regular cursor-pointer left-0 mr-auto hover:underline"><Link to="/forgot" className="text-main hover:underline cursor-pointer">Забыли пароль?</Link></a>
                 </div>
             </div>
-            {error && <AlertError title={titleError} description={error}/>}
+            <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)}>
+                <Alert severity="error">{error}</Alert>
+            </Snackbar>
+            <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess(null)}>
+                <Alert severity="success">{success}</Alert>
+            </Snackbar>
         </div>
     )
 }
