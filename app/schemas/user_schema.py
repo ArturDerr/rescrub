@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, validator
 from typing import Optional
 from pydantic import field_validator
 from pydantic_core import PydanticCustomError
@@ -88,4 +88,24 @@ class UserResponse(BaseModel):
             date(year, month, day)
             return v
         except (ValueError, AttributeError):
-            raise ValueError("Дата должна быть в формате ДД-ММ-ГГГГ")
+            raise ValueError("Дата должна быть в формате ДД-ММ-ГГГГ!")
+
+
+class UserLogin(BaseModel):
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = Field(None, pattern=r"^\+7\d{10}$")
+    password: str = Field(..., min_length=6)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "user@example.com",
+                "password": "password"
+            }
+        }
+
+    @validator('phone')
+    def validate_phone_or_email(cls, v, values):
+        if v is None and values.get('email') is None:
+            raise ValueError('Должен быть предоставлен либо email, либо номер телефона!')
+        return v

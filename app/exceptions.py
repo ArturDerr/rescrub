@@ -17,3 +17,13 @@ class EmailAlreadyExistsException(UserRegistrationException):
 class PhoneAlreadyExistsException(UserRegistrationException):
     def __init__(self):
         super().__init__("Пользователь с таким телефоном уже существует")
+
+
+class InvalidCredentialsException(Exception):
+    """Неверные учетные данные"""
+    pass
+
+
+class UserNotFoundException(Exception):
+    """Пользователь не найден"""
+    pass
