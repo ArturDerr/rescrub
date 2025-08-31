@@ -10,7 +10,7 @@ interface IButtonProps {
 export const Button = ({ title, disabled }: IButtonProps) => {
     return (
         <button disabled={disabled} type="submit" className="cursor-pointer flex justify-center items-center bg-black transition-colors duration-200 hover:bg-main max-w-[427px] h-[44px] rounded-[6px]">
-            <p className="text-white text-[14px] font-atyp-semibold">{title}</p>
+            <Link to="/main"><p className="text-white text-[14px] font-atyp-semibold">{title}</p></Link>
         </button>
     
     )

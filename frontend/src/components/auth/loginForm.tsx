@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../../ui/button";
-import { useEffect, useState } from "react";
-import type { ILogin, ILoginResponse } from "../../interfaces";
-import { login } from "../../api/auth";
-import Snackbar from "@mui/material/Snackbar";
+import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { Button } from "../../ui/button"
+import { useEffect, useState } from "react"
+import type { ILogin, ILoginResponse } from "../../interfaces"
+import { login } from "../../api/auth"
+import Snackbar from "@mui/material/Snackbar"
 import MuiAlert, { type AlertProps } from '@mui/material/Alert'
 
 function Alert(props: AlertProps) {
@@ -12,13 +12,12 @@ function Alert(props: AlertProps) {
 }
 
 export const LoginForm = () => {
-
     const navigate = useNavigate()
 
     const [success, setSuccess] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
-    const [formData, setFormData] = useState({ phone: "", email: "", password: "" })
+    const [formData, setFormData] = useState({ phone: "+79993332345", email: "", password: "" })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -33,7 +32,7 @@ export const LoginForm = () => {
             const payload: ILogin = { ...formData }
             const response: ILoginResponse = await login(payload)
             setSuccess(response.email)
-            navigate("/main")
+            navigate("/main", { state: { email: response.email } })
 
         } catch (err: any) {
             const resMessage = err.response?.data?.detail ||  err.response?.data?.message || err.message || "Ошибка авторизации"
@@ -54,7 +53,7 @@ export const LoginForm = () => {
                     <Button title="Войти" link="/main" />
                 </form>
                 <div className="mt-[6px] text-center">
-                    <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Еще нет аккаунта? <Link to="/reg" className="text-main hover:underline cursor-pointer">Зарегистрироваться</Link></span>
+                    <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Еще нет аккаунта? <Link to="/registration" className="text-main hover:underline cursor-pointer">Зарегистрироваться</Link></span>
                     <a className="block text-[11px] md:text-[12px] text-main font-atyp-regular cursor-pointer left-0 mr-auto hover:underline"><Link to="/forgot" className="text-main hover:underline cursor-pointer">Забыли пароль?</Link></a>
                 </div>
             </div>
