@@ -1,7 +1,8 @@
 import type { Transition, Variants } from "motion";
 import type { AnimatePresenceProps } from "motion/react";
 
-// анимация
+// типы для анимация
+
 export type TextLoopProps = {
   children: React.ReactNode[]
   className?: string
@@ -23,7 +24,17 @@ export interface IInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-// типы для регистрации
+/*
+  типы для реги
+  
+  phone - номер телефона
+  email - почта
+  password - пароль
+  birthDate - дата рождения (ДД-ММ-ГГГГ)
+  firstName - имя
+  firstName - фамилия
+  firstName - отчество
+*/
 
 export interface IRegister {
   email: string
@@ -41,7 +52,13 @@ export interface IRegisterResponse {
   email: string
 }
 
-// типы для входа
+/*
+  типы для входа
+  
+  phone - номер телефона
+  email - почта
+  password - пароль
+*/
 
 export interface ILogin {
   phone?: string
@@ -57,7 +74,11 @@ export interface ILoginResponse {
   email: string
 }
 
-// типы для сброса пароля
+/*
+  типы для сброоса пароля
+  
+  email - почта
+*/
 
 export interface IForgotPassword {
   email: string
@@ -65,4 +86,31 @@ export interface IForgotPassword {
 
 export interface IForgotPasswordResponse {
   message: string
+}
+
+/*
+  типы для подтверж почты
+  
+  email - почта
+*/
+
+export interface IConfirmEmail {
+  email: string
+}
+
+export interface IConfirmEmailResponse {
+  message: string
+}
+
+/*
+  типы для получения аналитики
+
+  mentions - упоминания о пользователе в сети
+  scanned - кол-во просканированных сайтов в сети
+*/
+
+export interface IAnalyticsResponse {
+  mentions: number
+  scanned: number
+  notScanned: number
 }

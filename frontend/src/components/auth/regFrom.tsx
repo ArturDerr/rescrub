@@ -1,25 +1,24 @@
-import { useState } from "react";
+import { useState } from "react"
 import MuiAlert, { type AlertProps } from '@mui/material/Alert'
-import { register } from "../../api/auth";
-import type { IRegister, IRegisterResponse } from "../../interfaces";
-import Snackbar from "@mui/material/Snackbar";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../../ui/button";
+import { register } from "../../api/auth"
+import type { IRegister, IRegisterResponse } from "../../interfaces"
+import Snackbar from "@mui/material/Snackbar"
+import { Link, useNavigate } from "react-router-dom"
+import { Button } from "../../ui/button"
 
 function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 export const RegForm = () => {
 
-    const navigation = useNavigate();
-    const navigate = (route: any) => navigation(route);
+    const navigate = useNavigate();
 
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
 
-    const [formData, setFormData] = useState({ email: "", phone: "", password: "", firstName: "", lastName: "", middleName: "", birthDate: "" })
-    // валидация формы
+    const [formData, setFormData] = useState({ email: "", phone: "+79993332315", password: "", firstName: "", lastName: "", middleName: "", birthDate: "" })
+    
     const [passwordRepeat, setPasswordRepeat] = useState("")
     const passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
     const [policies, setPolicies] = useState(false)
@@ -28,7 +27,15 @@ export const RegForm = () => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
     }
 
-    // валидация форм
+    const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, "")
+
+        if (value.length > 2) value = value.slice(0, 2) + "-" + value.slice(2)
+        if (value.length > 5) value = value.slice(0, 5) + "-" + value.slice(5, 9)
+
+        setFormData({ ...formData, birthDate: value.slice(0, 10) })
+    }
+
     const validateForm = () => {
         if (!formData.firstName.trim()) return "Введите имя"
         if (!formData.lastName.trim()) return "Введите фамилию"
@@ -38,10 +45,9 @@ export const RegForm = () => {
         if (formData.password.length < 8) return "Пароль должен содержать минимум 8 символов"
         if (formData.password !== passwordRepeat) return "Пароли не совпадают"
         if (!policies) return "Необходимо согласиться с политикой"
-        return null;
-    };
+        return null
+    }
 
-    // регистрация
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
         setError(null)
@@ -58,7 +64,7 @@ export const RegForm = () => {
             const response: IRegisterResponse = await register(payload)
             setSuccess(response.message)
             setPasswordRepeat("")
-            navigate("/confirm")
+            navigate("/confirm", { state: { email: response.email } })
 
         } catch (err: any) {
             const resMessage = err.response?.data?.detail ||  err.response?.data?.message || err.message || "Ошибка регистрации"
@@ -80,7 +86,7 @@ export const RegForm = () => {
                     <input type="email" name="email" required placeholder="Введите почту" value={formData.email} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     
                     <label className="text-[13px] font-atyp-medium">Дата рождения</label>
-                    <input type="text" name="birthDate" required placeholder="ДД-ММ-ГГГГ" value={formData.birthDate} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
+                    <input type="text" name="birthDate" maxLength={10} value={formData.birthDate} onChange={handleDateInput} required placeholder="ДД-ММ-ГГГГ" className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
                     
                     <label className="text-[13px] font-atyp-medium">Пароль</label>
                     <input type="password" name="password" required placeholder="Введите пароль" value={formData.password} onChange={handleChange} className="text-black text-[15px] placeholder-gray font-atyp-regular border-black border-[1px] p-[12px] rounded-[6px] w-full h-[44px] transition-all duration-200 focus:border-main focus:outline-none hover:border-main"/>
@@ -93,7 +99,7 @@ export const RegForm = () => {
                     <Button title="Зарегистрироваться" link="/confirm"/>
                 </form>
                 <div className="mt-[6px] text-center">
-                    <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Уже есть аккаунт? <Link to="/log" className="text-main hover:underline cursor-pointer">Войти</Link></span>
+                    <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Уже есть аккаунт? <Link to="/login" className="text-main hover:underline cursor-pointer">Войти</Link></span>
                 </div>
             </div>
             <div className="flex justify-center items-center">
