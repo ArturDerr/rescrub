@@ -1,6 +1,5 @@
 import { Header } from "../../../components/main/header";
 import { RegForm } from "../../../components/auth/regFrom";
-import { Footer } from "../../../components/main/footer";
 
 export const Registration = () => {
     return (

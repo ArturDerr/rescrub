@@ -53,7 +53,7 @@ export const LoginForm = () => {
                     <Button title="Войти" link="/main" />
                 </form>
                 <div className="mt-[6px] text-center">
-                    <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Еще нет аккаунта? <Link to="/registration" className="text-main hover:underline cursor-pointer">Зарегистрироваться</Link></span>
+                    <span className="text-[11px] md:text-[12px] text-black font-atyp-regular">Еще нет аккаунта? <Link to="/main" className="text-main hover:underline cursor-pointer">Зарегистрироваться</Link></span>
                     <a className="block text-[11px] md:text-[12px] text-main font-atyp-regular cursor-pointer left-0 mr-auto hover:underline"><Link to="/forgot" className="text-main hover:underline cursor-pointer">Забыли пароль?</Link></a>
                 </div>
             </div>

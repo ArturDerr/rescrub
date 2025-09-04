@@ -75,7 +75,7 @@ export const RegForm = () => {
     }
     
     return (
-        <div className="w-full flex justify-center mt-30">
+        <div className="w-full flex justify-center mt-[60px]">
             <div className="flex-col flex p-[30px] w-full max-w-[427px]">
                 <h1 className="font-atyp-semibold justify-start text-black text-[25px] md:text-[30px] leading-7">Создайте аккаунт</h1>
                 <p className="font-atyp-regular justify-start text-black text-[12px] leading-3.5 mt-[6px] md:mt-[10px]">и начните удалять свои персональные данные <br className="hidden sm:flex"/> из сети прямо сейчас.</p>

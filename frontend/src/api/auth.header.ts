@@ -1,16 +1,13 @@
-export const authHeader = (): Record<string, string> => {
+import { getToken } from "./auth"
+
+export const authHeader = async (): Promise<Record<string, string>> => {
   const userStr = localStorage.getItem("user")
+  const token = await getToken()
   if (!userStr) return {}
 
-  try {
-    const user = JSON.parse(userStr) as { access_token?: string }
-
-    if (user && user.access_token) {
-      return { Authorization: `Bearer ${user.access_token}` }
-    }
-  } catch {
+  if (!token) {
     return {}
   }
 
-  return {}
-}
+  return { Authorization: `Bearer ${token}` }
+} 
