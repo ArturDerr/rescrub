@@ -114,3 +114,5 @@ export interface IAnalyticsResponse {
   scanned: number
   notScanned: number
 }
+
+export 

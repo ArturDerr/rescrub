@@ -1,9 +1,9 @@
-import { MainForm } from "../../components/main/mainForm";
+import { SideBar } from "../../components/main/sidebar";
 
 export const MainPage = () => {
     return (
         <div>
-            <MainForm />
+            <SideBar />
         </div>
     )
 }

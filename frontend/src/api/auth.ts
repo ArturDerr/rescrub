@@ -32,9 +32,38 @@ export const login = async (payload: ILogin): Promise<ILoginResponse> => {
     return response.data
 }
 
+export const refreshToken = async (): Promise<string | null> => {
+    try {
+        const response = await api.post("/refresh/")
+        accessToken = response.data.access_token
+        if (accessToken) {
+            localStorage.setItem("access_token", accessToken)
+        }
+        localStorage.setItem("user", JSON.stringify(response.data))
+        return accessToken
+    } catch {
+        logout()
+        return null
+    }
+}
+
+export const getToken = async () => {
+    if (!accessToken) accessToken = localStorage.getItem("access_token")
+    if (!accessToken) return await refreshToken()
+    try {
+        const payload = JSON.parse(atob(accessToken.split(".")[1]))
+        const isExpired = payload.exp * 1000 < Date.now()
+        if (isExpired) return await refreshToken()
+        return accessToken
+    } catch {
+        return await refreshToken()
+    }        
+}
+
+
 export const forgotPassword = async (payload: IForgotPassword): Promise<IForgotPasswordResponse> => {
-    const response: AxiosResponse<IForgotPasswordResponse> = await axios.post(
-        `${API_URL}/forgot-password/`, 
+    const response: AxiosResponse<IForgotPasswordResponse> = await api.post(
+        "/forgot-password/", 
         payload
     )
 
@@ -42,8 +71,8 @@ export const forgotPassword = async (payload: IForgotPassword): Promise<IForgotP
 }
 
 export const confirmEmail = async (payload: IConfirmEmail): Promise<IConfirmEmailResponse> => {
-    const response: AxiosResponse<IConfirmEmailResponse> = await axios.post(
-        `${API_URL}/confirm-email/`, 
+    const response: AxiosResponse<IConfirmEmailResponse> = await api.post(
+        "/confirm-email/", 
         payload
     )
 
@@ -51,7 +80,7 @@ export const confirmEmail = async (payload: IConfirmEmail): Promise<IConfirmEmai
 }
 
 export const logout = (): void => {
-    accessToken = null
+    accessToken = ""
     localStorage.removeItem("access_token")
     localStorage.removeItem("user")
 }
@@ -59,5 +88,5 @@ export const logout = (): void => {
 export const getCurrentUser = (): ILoginResponse | null => {
     const user = localStorage.getItem("user")
     return user ? JSON.parse(user) : null
-  }
+}
 
